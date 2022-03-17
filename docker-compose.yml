@@ -1,0 +1,45 @@
+version: "3"
+networks:
+  ideabox:
+    driver: bridge
+services:
+  twitter-frontend:
+    build:
+      context: ./submodules/twitter-frontend
+    container_name: twitter-frontend
+    networks:
+      - ideabox
+    ports:
+      - "9081:3000"
+    volumes:
+      - ./submodules/twitter-frontend:/app
+    environment:
+      HOST: ${HOST:-localhost}
+      TITLE: "アイデアボックス"
+      HOME_URL: ${FRONTEND_URL:-http://localhost:9081}
+      API_URL: ${API_PRIVATE_URL:-http://localhost:9082:80/v1}
+      API_URL_BROWSER: ${API_PUBLIC_URL:-http://localhost:9082/v1}
+    command: npm run dev
+  twitter-sample-api:
+    build:
+      context: ./submodules/ideabox-api
+    container_name: twitter-sample-api
+    networks:
+      - ideabox
+    ports:
+      - "9082:80"
+    volumes:
+      - ./submodules/ideabox-api:/var/www/ideabox-api
+    environment:
+      REVIEWDOG_GITHUB_API_TOKEN: 9bc601cc6fa79df5577d0fbece98fa3f5fe0f898
+      APP_NAME: ideabox-api
+      APP_ENV: local
+      APP_KEY: "base64:ySDcI36jcxTC+SxA/HU46EOG0yWw0Kn0Lm3eRVg63+g="
+      APP_DEBUG: "true"
+      APP_URL: ${API_PUBLIC_URL:-http://localhost:9082/v1}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN:-http://localhost:9081}
+      APP_TIMEZONE: UTC
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:9081}
+      ADMIN_URL: ${ADMIN_URL:-http://localhost:9086}
+      API_SPEC_URL: ${API_SPEC_URL:-https://studio.apicur.io/preview?aid=45633#operation}
+      NLP_API_URL: ${NLP_API_URL:-http://localhost:9087/v1/NLP/}

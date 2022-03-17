@@ -1,0 +1,6 @@
+[submodule "submodules/twitter-frontend"]
+	path = submodules/twitter-frontend
+	url = git@github.com:narutyo/twitter-frontend.git
+[submodule "submodules/ideabox-api"]
+	path = submodules/ideabox-api
+	url = git@github.com:automationjp/ideabox-api.git
